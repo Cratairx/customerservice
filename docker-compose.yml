@@ -1,0 +1,37 @@
+services:
+  customer-service-db:
+    image: mysql:8
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: customer-service-db
+    volumes:
+      - customer-service-db-data:/var/lib/mysql
+
+  order-service-db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: order-service-db
+    volumes:
+      - order-service-db-data:/var/lib/mysql
+
+  CustomerService:
+    build: ./CustomerService
+    ports:
+      - "8080:8080"
+    depends_on:
+      - customer-service-db
+
+  OrderService:
+    build: ./OrderService
+    ports:
+      - "8081:8081"
+    depends_on:
+      - order-service-db
+      - customer-service-db
+
+volumes:
+  customer-service-db-data:
+  order-service-db-data:
