@@ -1,18 +1,25 @@
 package org.example.customerservice.controllers;
 import org.example.customerservice.dto.CustomerDTO;
+import org.example.customerservice.dto.DetailedCustomerDTO;
+import org.example.customerservice.model.Customer;
+import org.example.customerservice.repositories.CustomerRepository;
 import org.example.customerservice.services.CustomerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @RestController
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final CustomerRepository repo;
 
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, CustomerRepository repo) {
         this.customerService = customerService;
+        this.repo = repo;
     }
 
     @GetMapping("/index")
@@ -27,7 +34,7 @@ public class CustomerController {
 
     @GetMapping("/customer")
     public String customer() {
-        return "customer";
+        return repo.findById(1L).map(Customer::getFirstName).orElse("Unknow customer");
     }
 
     @RequestMapping("/deletecustomer/{id}")
@@ -43,11 +50,15 @@ public class CustomerController {
 
     }
 
-    @GetMapping("/allcustomers")
+    /*@GetMapping("/allcustomers")
     public String allcustomers(Model model) {
         model.addAttribute("customers", customerService.getAllDetailedCustomersDto());
 
         return "allCustomers";
+    }*/
+    @GetMapping("/allcustomers")
+    public List<DetailedCustomerDTO> getAllCustomers(){
+        return customerService.getAllDetailedCustomersDto();
     }
 
     @GetMapping("/register")
