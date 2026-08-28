@@ -25,12 +25,12 @@ public class CustomerServiceImpl implements CustomerService {
         return new  CustomerDTO(c.getId(),c.getFirstName(),c.getLastName());
     }
     @Override
-    public DetailedCustomerDTO customerToDetailedCustomerDTO(Customer c){
+    public DetailedCustomerDTO customerToDetailedCustomerDTO(Customer c){ //GETCUSTOMER (ta bort kommentar)
         return new DetailedCustomerDTO(c.getId(),c.getFirstName(),c.getLastName(),c.getEmail());
     }
 
     @Override
-    public List<DetailedCustomerDTO> getAllDetailedCustomersDto() {
+    public List<DetailedCustomerDTO> getAllDetailedCustomersDto() { //GETALLCUSTOMER (ta bort kommentar)
         return customerRepository.findAll().stream()
                 .map(this::customerToDetailedCustomerDTO)
                 .toList();
@@ -77,7 +77,6 @@ public class CustomerServiceImpl implements CustomerService {
         return true;
     }
 
-
     @Override
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id).orElse(null);
@@ -86,13 +85,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public boolean updateCustomer(Long id, String firstname, String lastname, String email) {
         Customer customer = customerRepository.findById(id).orElse(null);
-        if (customer != null) {
-            customer.setFirstName(firstname);
-            customer.setLastName(lastname);
-            customer.setEmail(email);
-            customerRepository.save(customer);
+        if (customer == null) {
+            return false;
         }
-        return false;
+        customer.setFirstName(firstname);
+        customer.setLastName(lastname);
+        customer.setEmail(email);
+        customerRepository.save(customer);
+        return true;
     }
-
 }

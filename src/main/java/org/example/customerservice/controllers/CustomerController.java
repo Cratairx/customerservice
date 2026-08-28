@@ -17,12 +17,10 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final CustomerRepository repo;
-    private final ResponseEntityExceptionHandler responseEntityExceptionHandler;
 
     public CustomerController(CustomerService customerService, CustomerRepository repo, ResponseEntityExceptionHandler responseEntityExceptionHandler) {
         this.customerService = customerService;
         this.repo = repo;
-        this.responseEntityExceptionHandler = responseEntityExceptionHandler;
     }
 
     @GetMapping("/index")
@@ -37,7 +35,7 @@ public class CustomerController {
 
     @GetMapping("/customer")
     public String customer() {
-        return repo.findById(1L).map(Customer::getFirstName).orElse("Unknow customer");
+        return repo.findById(1L).map(Customer::getFirstName).orElse("Unknown customer");
     }
 
     @RequestMapping("/deletecustomer/{id}")
@@ -53,15 +51,9 @@ public class CustomerController {
 
     }
 
-    /*@GetMapping("/allcustomers")
-    public String allcustomers(Model model) {
-        model.addAttribute("customers", customerService.getAllDetailedCustomersDto());
-
-        return "allCustomers";
-    }*/
-    @GetMapping("/allcustomers")
-    public List<DetailedCustomerDTO> getAllCustomers(){
-        return customerService.getAllDetailedCustomersDto();
+    @GetMapping("/api/customers")
+    public ResponseEntity<List<Customer>> getAllCustomers() {
+        return ResponseEntity.ok(repo.findAll());
     }
 
     @GetMapping("/register")
@@ -69,7 +61,7 @@ public class CustomerController {
         return "register";
     }
 
-    @PostMapping("/api/customers")
+    @PostMapping("/api/customer")
     public ResponseEntity<CustomerDTO> registerCustomer(@RequestBody CustomerDTO customer) {
         boolean success = customerService.register(customer.getFirstName(),customer.getLastName(),customer.getEmail());
         if (!success) {
@@ -77,21 +69,6 @@ public class CustomerController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-    /*public String register(@ModelAttribute CustomerDTO customer, Model model) {
-        boolean sucess = customerService.register(customer.getId(),customer.getFirstName(), customer.getLastName(), customer.getEmail());
-        if (!sucess) {
-            model.addAttribute("error","Failed to register customer");
-            return "register";
-        }
-        return "redirect:/allcustomers";
-    }*/
-
-    /* @GetMapping("/editcustomer/{id}")
-    public String editCustomer(@PathVariable Long id, Model model) {
-        model.addAttribute("customer", customerService.getCustomerById(id));
-        return "editCustomer";
-    } */
-
 
     @GetMapping("/api/editcustomer")
     public ResponseEntity<CustomerDTO> editCustomer(@RequestBody CustomerDTO customer, @RequestBody Long id) {
@@ -102,19 +79,6 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-
-
-    /* @PostMapping("/editcustomer")
-    public String updateCustomer(@ModelAttribute CustomerDTO customer, Model model) {
-      boolean sucess=customerService.updateCustomer(customer.getId(), customer.getFirstName(), customer.getLastName(), customer.getEmail());
-      if (!sucess) {
-          model.addAttribute("error","Failed to update customer");
-          return "redirect:/allcustomers";
-      }
-      model.addAttribute("sucess", "Successfully updated customer details");
-        return "redirect:/allcustomers";
-    } */
-
     @PostMapping("/api/editcustomer")
     public ResponseEntity<CustomerDTO> updateCustomer(@RequestBody CustomerDTO customer) {
         boolean success = customerService.updateCustomer(customer.getId(),customer.getFirstName(),customer.getLastName(),customer.getEmail());
@@ -124,5 +88,25 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/api/customer")
+    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable Long id) {
+        boolean success = customerService.getCustomerById(id) == null;
+        if (!success) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/api/customer")
+    public ResponseEntity<CustomerDTO> getPostCustomer(@RequestBody CustomerDTO customer) {
+        boolean success = customerService.getCustomerById(customer.getId()) == null;
+        if (!success) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 }
+
+
+
