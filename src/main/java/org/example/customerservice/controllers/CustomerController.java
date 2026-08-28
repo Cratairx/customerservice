@@ -6,9 +6,8 @@ import org.example.customerservice.repositories.CustomerRepository;
 import org.example.customerservice.services.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -18,10 +17,12 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final CustomerRepository repo;
+    private final ResponseEntityExceptionHandler responseEntityExceptionHandler;
 
-    public CustomerController(CustomerService customerService, CustomerRepository repo) {
+    public CustomerController(CustomerService customerService, CustomerRepository repo, ResponseEntityExceptionHandler responseEntityExceptionHandler) {
         this.customerService = customerService;
         this.repo = repo;
+        this.responseEntityExceptionHandler = responseEntityExceptionHandler;
     }
 
     @GetMapping("/index")
@@ -70,8 +71,8 @@ public class CustomerController {
 
     @PostMapping("/api/customers")
     public ResponseEntity<CustomerDTO> registerCustomer(@RequestBody CustomerDTO customer) {
-        boolean sucess = customerService.register(customer.getFirstName(),customer.getLastName(),customer.getEmail());
-        if (!sucess) {
+        boolean success = customerService.register(customer.getFirstName(),customer.getLastName(),customer.getEmail());
+        if (!success) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -85,13 +86,25 @@ public class CustomerController {
         return "redirect:/allcustomers";
     }*/
 
-    @GetMapping("/editcustomer/{id}")
+    /* @GetMapping("/editcustomer/{id}")
     public String editCustomer(@PathVariable Long id, Model model) {
         model.addAttribute("customer", customerService.getCustomerById(id));
         return "editCustomer";
+    } */
+
+
+    @GetMapping("/api/editcustomer")
+    public ResponseEntity<CustomerDTO> editCustomer(@RequestBody CustomerDTO customer, @RequestBody Long id) {
+        boolean success = customerService.getCustomerById(id).equals(customer);
+        if (!success) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/editcustomer")
+
+
+    /* @PostMapping("/editcustomer")
     public String updateCustomer(@ModelAttribute CustomerDTO customer, Model model) {
       boolean sucess=customerService.updateCustomer(customer.getId(), customer.getFirstName(), customer.getLastName(), customer.getEmail());
       if (!sucess) {
@@ -100,6 +113,15 @@ public class CustomerController {
       }
       model.addAttribute("sucess", "Successfully updated customer details");
         return "redirect:/allcustomers";
+    } */
+
+    @PostMapping("/api/editcustomer")
+    public ResponseEntity<CustomerDTO> updateCustomer(@RequestBody CustomerDTO customer) {
+        boolean success = customerService.updateCustomer(customer.getId(),customer.getFirstName(),customer.getLastName(),customer.getEmail());
+        if (!success) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
