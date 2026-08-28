@@ -4,6 +4,9 @@ import org.example.customerservice.dto.DetailedCustomerDTO;
 import org.example.customerservice.model.Customer;
 import org.example.customerservice.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 
 @Service
@@ -33,8 +36,9 @@ public class CustomerServiceImpl implements CustomerService {
                 .toList();
     }
 
+    // tog bord id här tror inte vi behöver det här.
     @Override
-    public boolean register(Long id, String firstName, String lastName, String email) {
+    public boolean register(String firstName, String lastName, String email) {
         if( firstName == null || lastName == null || email == null ){
             return false;
         }
@@ -55,27 +59,24 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
-    // SKA EJ TAS BORT. SKA FIXAS med någon typ av fråga till order-service/orderService
-    // om customer id har booking = true ta inte bort kunden!!!!
+   // Här ska bara Emils Endpoint skrivas där XXXXXXX står
     @Override
     public boolean deleteCustomer(Long id) {
-        return false;
-    }
-    /* @Override
-    public boolean deleteCustomer(Long id) {
-        Customer customer = customerRepository.findById(id).orElse(null);
+        RestTemplate restTemplate = new RestTemplate();
 
-        if (customer == null) {
+        Boolean hasBooking;
+        try {
+            hasBooking = restTemplate.getForObject("http://localhost:8080/bookings/XXXXXX?customerId={id}" + id, Boolean.class);
+        } catch (RestClientException e) {
             return false;
         }
-        if (customer.getBookings() != null && !customer.getBookings().isEmpty()) {
+        if (!Boolean.FALSE.equals(hasBooking)) {
             return false;
         }
-
         customerRepository.deleteById(id);
         return true;
+    }
 
-    }*/
 
     @Override
     public Customer getCustomerById(Long id) {

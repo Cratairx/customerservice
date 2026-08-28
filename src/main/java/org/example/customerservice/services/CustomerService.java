@@ -14,7 +14,7 @@ public interface CustomerService {
 
     List<DetailedCustomerDTO> getAllDetailedCustomersDto();
 
-    boolean register(Long id, String firstName, String lastName, String email);
+    boolean register(String firstName, String lastName, String email);
 
     boolean deleteCustomer(Long id);
 

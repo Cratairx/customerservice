@@ -4,6 +4,8 @@ import org.example.customerservice.dto.DetailedCustomerDTO;
 import org.example.customerservice.model.Customer;
 import org.example.customerservice.repositories.CustomerRepository;
 import org.example.customerservice.services.CustomerService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -66,15 +68,22 @@ public class CustomerController {
         return "register";
     }
 
-    @PostMapping("/register")
-    public String register(@ModelAttribute CustomerDTO customer, Model model) {
+    @PostMapping("/api/customers")
+    public ResponseEntity<CustomerDTO> registerCustomer(@RequestBody CustomerDTO customer) {
+        boolean sucess = customerService.register(customer.getFirstName(),customer.getLastName(),customer.getEmail());
+        if (!sucess) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    /*public String register(@ModelAttribute CustomerDTO customer, Model model) {
         boolean sucess = customerService.register(customer.getId(),customer.getFirstName(), customer.getLastName(), customer.getEmail());
         if (!sucess) {
             model.addAttribute("error","Failed to register customer");
             return "register";
         }
         return "redirect:/allcustomers";
-    }
+    }*/
 
     @GetMapping("/editcustomer/{id}")
     public String editCustomer(@PathVariable Long id, Model model) {
