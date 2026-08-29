@@ -14,12 +14,12 @@ public interface CustomerService {
 
     List<DetailedCustomerDTO> getAllDetailedCustomersDto();
 
-    boolean register(String firstName, String lastName, String email);
+    Customer register(String firstName, String lastName, String email);
 
     boolean deleteCustomer(Long id);
 
     Customer getCustomerById(Long id);
 
-    boolean updateCustomer(Long id, String firstname, String lastname, String email);
+    Customer updateCustomer(Long id, String firstname, String lastname, String email);
 
 }

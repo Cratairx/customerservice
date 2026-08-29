@@ -38,24 +38,22 @@ public class CustomerServiceImpl implements CustomerService {
 
     // tog bord id här tror inte vi behöver det här.
     @Override
-    public boolean register(String firstName, String lastName, String email) {
+    public Customer register(String firstName, String lastName, String email) {
         if( firstName == null || lastName == null || email == null ){
-            return false;
+            return null;
         }
         if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()){
-            return false;
+            return null;
         }
 
         if (customerRepository.findByEmail(email).isPresent()){
-            return false;
+            return null;
         }
         Customer customer = new Customer();
         customer.setFirstName(firstName);
         customer.setLastName(lastName);
         customer.setEmail(email);
-        customerRepository.save(customer);
-
-        return true;
+        return customerRepository.save(customer);
     }
 
 
@@ -83,15 +81,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public boolean updateCustomer(Long id, String firstname, String lastname, String email) {
+    public Customer updateCustomer(Long id, String firstname, String lastname, String email) {
         Customer customer = customerRepository.findById(id).orElse(null);
         if (customer == null) {
-            return false;
+            return null;
         }
         customer.setFirstName(firstname);
         customer.setLastName(lastname);
         customer.setEmail(email);
-        customerRepository.save(customer);
-        return true;
+        return customerRepository.save(customer);
     }
 }
