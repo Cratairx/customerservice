@@ -22,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO customerToCustomerDTO(Customer c){
-        return new  CustomerDTO(c.getId(),c.getFirstName(),c.getLastName());
+        return new  CustomerDTO(c.getId(),c.getFirstName(),c.getLastName(),c.getEmail());
     }
     @Override
     public DetailedCustomerDTO customerToDetailedCustomerDTO(Customer c){ //GETCUSTOMER (ta bort kommentar)

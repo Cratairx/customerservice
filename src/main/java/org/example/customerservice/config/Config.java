@@ -22,9 +22,9 @@ public class Config implements CommandLineRunner {
     public void run(String... args) {
         if (customerRepository.count() == 0) {
             customerRepository.saveAll(List.of(
-                    new Customer(1L, "John", "Doe", "john@example.com"),
-                    new Customer(2L, "Jane", "Smith", "jane@example.com"),
-                    new Customer(3L, "Bob", "Johnson", "bob@example.com")
+                    new Customer( "John", "Doe", "john@example.com"),
+                    new Customer( "Jane", "Smith", "jane@example.com"),
+                    new Customer( "Bob", "Johnson", "bob@example.com")
             ));
         }
 
