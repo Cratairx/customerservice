@@ -64,7 +64,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         Boolean hasBooking;
         try {
-            hasBooking = restTemplate.getForObject("http://localhost:8081/api/bookings/?customerId={id}" + id, Boolean.class);
+            hasBooking = restTemplate.getForObject("http://localhost:8081/api/bookings/getbooking/{id}" + id, Boolean.class);
         } catch (RestClientException e) {
             return false;
         }
