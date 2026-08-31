@@ -4,6 +4,7 @@ import org.example.customerservice.dto.DetailedCustomerDTO;
 import org.example.customerservice.model.Customer;
 import org.example.customerservice.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -60,15 +61,18 @@ public class CustomerServiceImpl implements CustomerService {
    // Här ska bara Emils Endpoint skrivas där XXXXXXX står
     @Override
     public boolean deleteCustomer(Long id) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        Boolean hasBooking;
-        try {
-            hasBooking = restTemplate.getForObject("http://localhost:8081/api/bookings/getbooking/{id}" + id, Boolean.class);
-        } catch (RestClientException e) {
+        if (!customerRepository.existsById(id)) {
             return false;
         }
-        if (!Boolean.FALSE.equals(hasBooking)) {
+    RestTemplate restTemplate = new RestTemplate();
+        Boolean customerHasBookings;
+        try{
+            customerHasBookings = restTemplate.getForObject( "http://booking-service:8081/api/bookings/exists?customerId={customerId}", Boolean.class, id);
+
+        }catch (RestClientException e){
+            return false;
+        }
+        if(!Boolean.FALSE.equals(customerHasBookings)){
             return false;
         }
         customerRepository.deleteById(id);
