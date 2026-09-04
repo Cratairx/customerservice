@@ -14,11 +14,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for CustomerServiceImpl's business logic.
- * No Spring context is started here — Mockito wires the mocks directly,
- * which is faster and keeps this test focused on the service logic itself.
- */
+
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceImplTest {
 

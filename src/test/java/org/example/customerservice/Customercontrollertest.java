@@ -15,13 +15,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Web-layer slice test: only the MVC infrastructure and CustomerController
- * are loaded. CustomerController's two constructor dependencies
- * (CustomerService, CustomerRepository) are both mocked into the context —
- * @WebMvcTest won't start otherwise, since it can't build a real
- * CustomerRepository (no DB) or CustomerService.
- */
+
 @WebMvcTest(controllers = CustomerController.class)
 class CustomerControllerTest {
 

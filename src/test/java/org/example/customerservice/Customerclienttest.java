@@ -11,11 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-/**
- * Verifies RestTemplate deserialization/wiring against a mocked HTTP server.
- * No Spring context or Mockito needed — RestTemplate and MockRestServiceServer
- * are plain objects.
- */
+
 class CustomerClientTest {
 
     @Test
