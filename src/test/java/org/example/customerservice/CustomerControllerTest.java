@@ -1,5 +1,6 @@
 package org.example.customerservice;
 
+import org.example.customerservice.controllers.CustomerController;
 import org.example.customerservice.dto.DetailedCustomerDTO;
 import org.example.customerservice.model.Customer;
 import org.example.customerservice.repositories.CustomerRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.ResponseCreator;
@@ -26,10 +28,12 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
+//@SpringBootTest
+//@AutoConfigureMockMvc
+@WebMvcTest(controllers = CustomerController.class)
 public class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -59,6 +63,18 @@ public class CustomerControllerTest {
 
         assertNull(result);
         verify(customerRepository, never()).save(any());
+    }
+
+    @Test
+    void registerShouldReturnFalseWhenEmailAlreadyInUse() throws Exception {
+        when(customerService.register(any())).thenReturn(false);
+
+        mockMvc.perform(post("/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email":"taken@example.com","name":"Anna"}
+                                """))
+                .andExpect();
     }
 
     @Test
