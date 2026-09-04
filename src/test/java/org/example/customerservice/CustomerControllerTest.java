@@ -8,17 +8,20 @@ import org.example.customerservice.services.CustomerClient;
 import org.example.customerservice.services.CustomerService;
 import org.example.customerservice.services.CustomerServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.ResponseCreator;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +32,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 //@SpringBootTest
@@ -38,12 +43,40 @@ public class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+
+    @MockitoBean
     private CustomerService customerService;
+    @MockitoBean
     private CustomerRepository customerRepository;
+    @MockitoBean
     private CustomerClient customerClient;
+    @MockitoBean
     private RestTemplate restTemplate;
+    @MockitoBean
     private CustomerServiceImpl  customerServiceImpl;
+
+    private Customer customer (Long id, String firstName, String lastName, String email) {
+        Customer customer = new Customer();
+        customer.setId(id);
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
+        customer.setEmail(email);
+        return customer;
+    }
+    @Test
+    void getCustomerById() throws Exception {
+        Customer found = customer(1L,"Daniel","Inserte","Daniel@mail.com");
+        when(customerService.getCustomerById(1L)).thenReturn(found);
+        when(customerService.customerToDetailedCustomerDTO(found))
+                .thenReturn(new DetailedCustomerDTO(1L,"Daniel","Inserte","Daniel@mail.com"));
+
+        mockMvc.perform(get("/api/Customer/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.firstName").value("Anna"))
+                .andExpect(jsonPath("$.lastName").value("Andersson"))
+                .andExpect(jsonPath("$.email").value("anna@example.com"));
+    }
 
    /* @Test
     void getCustomerById(){
@@ -65,17 +98,7 @@ public class CustomerControllerTest {
         verify(customerRepository, never()).save(any());
     }
 
-    @Test
-    void registerShouldReturnFalseWhenEmailAlreadyInUse() throws Exception {
-        when(customerService.register(any())).thenReturn(false);
 
-        mockMvc.perform(post("/customers")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"email":"taken@example.com","name":"Anna"}
-                                """))
-                .andExpect();
-    }
 
     @Test
     void registerShouldReturnTrueWhenEmailNotInUse() {
