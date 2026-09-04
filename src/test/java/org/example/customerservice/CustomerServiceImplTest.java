@@ -41,7 +41,9 @@ class CustomerServiceImplTest {
 
         Customer result = customerServiceImpl.register("John", "Doe", "john@example.com");
 
+
         assertNotNull(result);
+        assertEquals("john@example.com", result.getEmail());
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
