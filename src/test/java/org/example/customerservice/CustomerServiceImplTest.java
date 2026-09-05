@@ -38,10 +38,14 @@ class CustomerServiceImplTest {
     @Test
     void registerShouldReturnCustomerWhenEmailNotInUse() {
         when(customerRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
+        when(customerRepository.save(any(Customer.class))).thenAnswer(inv -> inv.getArgument(0));
 
         Customer result = customerServiceImpl.register("John", "Doe", "john@example.com");
 
         assertNotNull(result);
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        assertEquals("john@example.com", result.getEmail());
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
@@ -54,12 +58,14 @@ class CustomerServiceImplTest {
         customer.setId(1L);
 
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+        when(customerRepository.save(any(Customer.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        customerServiceImpl.updateCustomer(1L, "Emil", "D", "emil@example.com");
+        Customer result = customerServiceImpl.updateCustomer(1L, "Emil", "D", "emil@example.com");
 
-        assertEquals("Emil", customer.getFirstName());
-        assertEquals("D", customer.getLastName());
-        assertEquals("emil@example.com", customer.getEmail());
+        assertNotNull(result);
+        assertEquals("Emil", result.getFirstName());
+        assertEquals("D", result.getLastName());
+        assertEquals("emil@example.com", result.getEmail());
         verify(customerRepository, times(1)).save(any(Customer.class));
     }
 
