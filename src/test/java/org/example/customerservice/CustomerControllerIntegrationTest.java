@@ -56,7 +56,7 @@ class CustomerControllerIntegrationTest {
 
     @Test
         // POST /customer should persist a new row and return 201 with the customer's data
-    void registerCustomer_returns201_andPersistsToDatabase() {
+    void registerCustomerReturns201AndPersistsToDatabase() {
         CustomerDTO requestBody = new CustomerDTO(null, "John", "Doe", "john@example.com");
 
         ResponseEntity<CustomerDTO> response = restTemplate.postForEntity(
@@ -70,7 +70,7 @@ class CustomerControllerIntegrationTest {
 
     @Test
         // POST /customer should return 400 and avoid a duplicate row when the email is already registered
-    void registerCustomer_returns400_whenEmailAlreadyInUse() {
+    void registerCustomerReturns400WhenEmailAlreadyInUse() {
         restTemplate.postForEntity("/api/customer",
                 new CustomerDTO(null, "John", "Doe", "john@example.com"), CustomerDTO.class);
 
@@ -83,7 +83,7 @@ class CustomerControllerIntegrationTest {
 
     @Test
         // GET /customer/{id} should return 200 with the persisted customer's details
-    void getCustomer_returnsOk_whenFound() {
+    void getCustomerReturnsOkWhenFound() {
         Customer saved = customerRepository.save(customerWith("John", "Doe", "john@example.com"));
 
         ResponseEntity<String> response = restTemplate.getForEntity(
@@ -95,7 +95,7 @@ class CustomerControllerIntegrationTest {
 
     @Test
         // GET /customer/{id} should return 404 when no customer exists with that id
-    void getCustomer_returns404_whenNotFound() {
+    void getCustomerReturns404WhenNotFound() {
         ResponseEntity<String> response = restTemplate.getForEntity("/api/customer/999999", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -103,7 +103,7 @@ class CustomerControllerIntegrationTest {
 
     @Test
         // POST /customer/{id} should persist the updated fields and return 200
-    void updateCustomer_returnsOk_andPersistsChanges() {
+    void updateCustomerReturnsOkAndPersistsChanges() {
         Customer saved = customerRepository.save(customerWith("John", "Doe", "john@example.com"));
         CustomerDTO update = new CustomerDTO(null, "Emil", "D", "emil@example.com");
 
@@ -118,7 +118,7 @@ class CustomerControllerIntegrationTest {
 
     @Test
         // POST /customer/{id} should return 400 when no customer exists with that id
-    void updateCustomer_returns400_whenNotFound() {
+    void updateCustomerReturns400WhenNotFound() {
         CustomerDTO update = new CustomerDTO(null, "Emil", "D", "emil@example.com");
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -129,7 +129,7 @@ class CustomerControllerIntegrationTest {
 
     @Test
         // POST /customer/{id}/delete should return 409 when no customer exists with that id
-    void deleteCustomer_returns409_whenCustomerDoesNotExist() {
+    void deleteCustomerReturns409WhenCustomerDoesNotExist() {
         ResponseEntity<Void> response = restTemplate.postForEntity(
                 "/api/customer/999999/delete", null, Void.class);
 
