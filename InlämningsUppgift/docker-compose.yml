@@ -9,13 +9,18 @@ services:
     volumes:
       - customer-db-data:/var/lib/mysql
 
-  order-db:
+  booking-db:
     image: mysql:8
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: orderdb
+      MYSQL_DATABASE: bookingdb
     volumes:
-      - order-db-data:/var/lib/mysql
+      - booking-db-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   customer-service:
     build: ./customer-service
@@ -24,14 +29,14 @@ services:
     depends_on:
       - customer-db
 
-  order-service:
-    build: ./order-service
+  booking-service:
+    build: ./booking-service
     ports:
       - "8081:8081"
     depends_on:
-      - order-db
+      - booking-db
       - customer-service
 
 volumes:
   customer-db-data:
-  order-db-data:
+  booking-db-data:

@@ -66,6 +66,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
     RestTemplate restTemplate = new RestTemplate();
         Boolean customerHasBookings;
+
         try{
             customerHasBookings = restTemplate.getForObject( "http://booking-service:8081/api/bookings/exists?customerId={customerId}", Boolean.class, id);
 
