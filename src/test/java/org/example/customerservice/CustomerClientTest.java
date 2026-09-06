@@ -30,3 +30,4 @@ class CustomerClientTest {
         assertEquals("Daniel", customer.getFirstName());
     }
 }
+
