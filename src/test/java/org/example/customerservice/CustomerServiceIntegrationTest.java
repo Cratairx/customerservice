@@ -15,7 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.mysql.MySQLContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+//
 @Testcontainers
 @SpringBootTest
 class CustomerServiceIntegrationTest {
