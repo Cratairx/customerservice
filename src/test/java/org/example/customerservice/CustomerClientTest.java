@@ -19,7 +19,7 @@ class CustomerClientTest {
         RestTemplate restTemplate = new RestTemplate();
         MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
 
-        server.expect(requestTo("http://customer-service/customer"))
+        server.expect(requestTo("http://customer-servicce/customer"))
                 .andRespond(withSuccess(
                         "{\"id\":1,\"firstName\":\"Daniel\",\"lastName\":\"Inserte\"}",
                         MediaType.APPLICATION_JSON));
