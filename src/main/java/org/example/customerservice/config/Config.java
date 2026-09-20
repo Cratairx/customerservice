@@ -12,7 +12,7 @@ public class Config implements CommandLineRunner {
 
     private final CustomerRepository customerRepository;
 
-
+// sdasd s testar githubactions
     public Config(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
 
