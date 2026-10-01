@@ -44,7 +44,7 @@ public class CustomerController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.customerToCustomerDTO(saved));
     }
-
+//sdasda
     @PostMapping("/customer/{id}")
     public ResponseEntity<CustomerDTO> updaterCustomer(@PathVariable Long id, @RequestBody CustomerDTO customer) {
         Customer updated = customerService.updateCustomer(id, customer.getFirstName(), customer.getLastName(), customer.getEmail());
