@@ -21,7 +21,7 @@ public class CustomerController {
         this.customerService = customerService;
         this.repo = repo;
     }
-
+// sdsd testar push protection
     @GetMapping("/customers")
     public ResponseEntity<List<Customer>> getAllCustomers() {
         return ResponseEntity.ok(repo.findAll());
